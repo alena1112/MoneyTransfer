@@ -1,0 +1,10 @@
+CREATE SCHEMA ts_db;
+CREATE TABLE ts_db.Account (id VARCHAR(36) NOT NULL, name VARCHAR(50), amount DOUBLE, currency_name VARCHAR(3), card_number VARCHAR(16) NOT NULL, PRIMARY KEY (id));
+create unique index ACCOUNT_ID_PK on ts_db.Account (id);
+create unique index ACCOUNT_CARD_NUMBER_CONSTRAINT on ts_db.Account (card_number);
+CREATE TABLE ts_db.History (id VARCHAR(36) NOT NULL, from_account_id VARCHAR(36) NOT NULL, to_account_id VARCHAR(36) NOT NULL, amount DOUBLE, transfer_date TIMESTAMP, PRIMARY KEY (id));
+create unique index HISTORY_ID_PK on ts_db.History (id);
+ALTER TABLE ts_db.History ADD FOREIGN KEY (from_account_id) REFERENCES ts_db.Account(id);
+ALTER TABLE ts_db.History ADD FOREIGN KEY (to_account_id) REFERENCES ts_db.Account(id);
+CREATE TABLE ts_db.Currency (id VARCHAR(36) NOT NULL, currency_name VARCHAR(3) NOT NULL, cost_in_rub DOUBLE NOT NULL, PRIMARY KEY (id));
+create unique index CURRENCY_ID_PK on ts_db.Currency (id);
