@@ -1,7 +1,5 @@
 package com.task.db.core;
 
-import com.task.model.Account;
-
 import java.util.List;
 import java.util.UUID;
 

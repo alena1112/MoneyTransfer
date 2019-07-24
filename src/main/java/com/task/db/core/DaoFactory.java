@@ -10,5 +10,5 @@ public interface DaoFactory {
     void initDB();
     AccountDao getAccountDao();
     EntityDao<History> getHistoryDao();
-    EntityDao<Currency> getCurrencyDao();
+    CurrencyDao getCurrencyDao();
 }

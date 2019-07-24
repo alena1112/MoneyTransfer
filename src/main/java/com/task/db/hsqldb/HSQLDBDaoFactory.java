@@ -1,6 +1,7 @@
 package com.task.db.hsqldb;
 
 import com.task.db.core.AccountDao;
+import com.task.db.core.CurrencyDao;
 import com.task.db.core.DaoFactory;
 import com.task.db.core.EntityDao;
 import com.task.model.Currency;
@@ -20,7 +21,7 @@ public class HSQLDBDaoFactory implements DaoFactory {
     private Connection connection;
     private AccountDao accountDao;
     private EntityDao<History> historyDao;
-    private EntityDao<Currency> currencyDao;
+    private CurrencyDao currencyDao;
 
     public static final String databaseFilesPath = "hsqldb_files";
     public static final String databaseName = "ts_db";
@@ -77,7 +78,7 @@ public class HSQLDBDaoFactory implements DaoFactory {
     }
 
     @Override
-    public EntityDao<Currency> getCurrencyDao() {
+    public CurrencyDao getCurrencyDao() {
         if (currencyDao == null) {
             currencyDao = new HSQLDBCurrencyDao(connection);
         }

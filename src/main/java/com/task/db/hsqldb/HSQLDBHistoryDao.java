@@ -2,6 +2,7 @@ package com.task.db.hsqldb;
 
 import com.task.db.core.AbstractEntityDao;
 import com.task.db.core.AccountDao;
+import com.task.model.CurrencyName;
 import com.task.model.History;
 
 import java.sql.Connection;
@@ -23,24 +24,26 @@ public class HSQLDBHistoryDao extends AbstractEntityDao<History> {
 
     @Override
     protected String createInsertSqlQuery(History history) {
-        return String.format("INSERT INTO %s.History (id, from_account_id, to_account_id, amount, transfer_date) " +
-                        "values ('%s', '%s', '%s', %s, '%s')",
+        return String.format("INSERT INTO %s.History (id, from_account_id, to_account_id, amount, currency_name, transfer_date) " +
+                        "values ('%s', '%s', '%s', %s, '%s', '%s')",
                 HSQLDBDaoFactory.databaseName,
                 history.getId(),
                 history.getFrom().getId(),
                 history.getTo().getId(),
                 history.getAmount(),
+                history.getCurrency().getId(),
                 history.getTransferDate(DB_DATE_FORMAT));
     }
 
     @Override
     protected String createUpdateSqlQuery(History history) {
         return String.format("UPDATE %s.History SET from_account_id = '%s', to_account_id = '%s', " +
-                        "amount = %s, transfer_date = %s where id = '%s'",
+                        "amount = %s, currency_name = %s, transfer_date = %s where id = '%s'",
                 HSQLDBDaoFactory.databaseName,
                 history.getFrom(),
                 history.getTo(),
                 history.getAmount(),
+                history.getCurrency().getId(),
                 history.getTransferDate(),
                 history.getId());
     }
@@ -52,6 +55,7 @@ public class HSQLDBHistoryDao extends AbstractEntityDao<History> {
         history.setFrom(accountDao.getById(UUID.fromString(rs.getString("from_account_id"))));
         history.setTo(accountDao.getById(UUID.fromString(rs.getString("to_account_id"))));
         history.setAmount(rs.getDouble("amount"));
+        history.setCurrency(CurrencyName.fromId(rs.getString("currency_name")));
         history.setTransferDate(rs.getDate("transfer_date"));
         return history;
     }

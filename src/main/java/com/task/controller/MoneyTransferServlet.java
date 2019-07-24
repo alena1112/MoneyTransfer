@@ -1,6 +1,7 @@
 package com.task.controller;
 
 import com.task.db.DatabaseType;
+import com.task.model.CurrencyName;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -14,6 +15,7 @@ public class MoneyTransferServlet extends HttpServlet {
     private static final String FROM_ACCOUNT = "from";
     private static final String TO_ACCOUNT = "to";
     private static final String AMOUNT = "amount";
+    private static final String CURRENCY = "currency";
 
     private MoneyTransferController controller = new MoneyTransferController(DatabaseType.HSQLDB);
 
@@ -25,6 +27,7 @@ public class MoneyTransferServlet extends HttpServlet {
             String fromAccCardNumber = req.getHeader(FROM_ACCOUNT);
             String toAccCardNumber = req.getHeader(TO_ACCOUNT);
             String amount = req.getHeader(AMOUNT);
+            String currency = req.getHeader(CURRENCY);
 
             if (StringUtils.isAllBlank(fromAccCardNumber, toAccCardNumber, amount)) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -32,7 +35,7 @@ public class MoneyTransferServlet extends HttpServlet {
                 return;
             }
 
-            boolean result = controller.transfer(fromAccCardNumber, toAccCardNumber, Double.parseDouble(amount));
+            boolean result = controller.transfer(fromAccCardNumber, toAccCardNumber, Double.parseDouble(amount), CurrencyName.fromId(currency));
 
             resp.getWriter().println(result ? "Transfer was made successfully!" :
                     "Transfer failed");

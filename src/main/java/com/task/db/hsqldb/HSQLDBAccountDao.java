@@ -3,6 +3,7 @@ package com.task.db.hsqldb;
 import com.task.db.core.AbstractEntityDao;
 import com.task.db.core.AccountDao;
 import com.task.model.Account;
+import com.task.model.CurrencyName;
 import com.task.model.Entity;
 import org.apache.log4j.Logger;
 
@@ -23,17 +24,19 @@ public class HSQLDBAccountDao extends AbstractEntityDao<Account> implements Acco
     }
 
     public String createInsertSqlQuery(Account account) {
-        return String.format("INSERT INTO %s.Account (id, name, amount, card_number) values ('%s', '%s', %s, '%s')",
+        return String.format("INSERT INTO %s.Account (id, currency_name, name, amount, card_number) values ('%s', '%s', '%s', %s, '%s')",
                 HSQLDBDaoFactory.databaseName,
                 account.getId(),
+                account.getCurrency().getId(),
                 account.getName(),
                 account.getAmount(),
                 account.getCardNumber());
     }
 
     public String createUpdateSqlQuery(Account account) {
-        return String.format("UPDATE %s.Account SET name = '%s', amount = %s, card_number = '%s' where id = '%s'",
+        return String.format("UPDATE %s.Account SET currency_name = '%s', name = '%s', amount = %s, card_number = '%s' where id = '%s'",
                 HSQLDBDaoFactory.databaseName,
+                account.getCurrency().getId(),
                 account.getName(),
                 account.getAmount(),
                 account.getCardNumber(),
@@ -44,6 +47,7 @@ public class HSQLDBAccountDao extends AbstractEntityDao<Account> implements Acco
     protected Account createEntityFromDb(ResultSet rs) throws SQLException {
         Account account = new Account();
         account.setId(UUID.fromString(rs.getString("id")));
+        account.setCurrency(CurrencyName.fromId(rs.getString("currency_name")));
         account.setName(rs.getString("name"));
         account.setAmount(rs.getDouble("amount"));
         account.setCardNumber(rs.getString("card_number"));

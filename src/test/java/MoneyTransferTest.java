@@ -32,7 +32,8 @@ public class MoneyTransferTest extends Mockito {
 
         when(request.getHeader("from")).thenReturn("2200000000000000");
         when(request.getHeader("to")).thenReturn("2200000000000001");
-        when(request.getHeader("amount")).thenReturn("100");
+        when(request.getHeader("amount")).thenReturn("1");
+        when(request.getHeader("currency")).thenReturn("USD");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -53,11 +54,11 @@ public class MoneyTransferTest extends Mockito {
         writer.flush();
 
         assertTrue(stringWriter.toString().contains("Transfer was made successfully!"));
-        assertEquals((int) daoFactory.getAccountDao().getByCardNumber("2200000000000000").getAmount(), 9900);
-        assertEquals((int) daoFactory.getAccountDao().getByCardNumber("2200000000000001").getAmount(), 20100);
+        assertEquals((int) daoFactory.getAccountDao().getByCardNumber("2200000000000000").getAmount(), (int) (10000 - 62.9776));
+        assertEquals((int) daoFactory.getAccountDao().getByCardNumber("2200000000000001").getAmount(), (int) (20000 + 62.9776));
         assertEquals(1, daoFactory.getHistoryDao().getAll().size());
 
-        clearTables("History", "Currency", "Account");
+//        clearTables("History", "Currency", "Account");
     }
 
     private void clearTables(String... tableNames) {

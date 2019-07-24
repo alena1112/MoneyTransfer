@@ -1,15 +1,17 @@
 package com.task.db.hsqldb;
 
 import com.task.db.core.AbstractEntityDao;
+import com.task.db.core.CurrencyDao;
 import com.task.model.Currency;
 import com.task.model.CurrencyName;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class HSQLDBCurrencyDao extends AbstractEntityDao<Currency> {
+public class HSQLDBCurrencyDao extends AbstractEntityDao<Currency> implements CurrencyDao {
 
     public HSQLDBCurrencyDao(Connection connection) {
         this.connection = connection;
@@ -41,6 +43,23 @@ public class HSQLDBCurrencyDao extends AbstractEntityDao<Currency> {
         currency.setId(UUID.fromString(rs.getString("id")));
         currency.setCurrencyName(CurrencyName.fromId(rs.getString("currency_name")));
         currency.setCostInRUB(rs.getDouble("cost_in_rub"));
+        return currency;
+    }
+
+    @Override
+    public Currency getByCurrencyName(CurrencyName currencyName) {
+        String sql = String.format("SELECT * FROM %s.Currency where currency_name = '%s'",
+                HSQLDBDaoFactory.databaseName, currencyName.getId());
+        Currency currency = null;
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                currency = createEntityFromDb(rs);
+            }
+            connection.commit();
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        }
         return currency;
     }
 }

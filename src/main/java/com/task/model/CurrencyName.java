@@ -13,6 +13,10 @@ public enum CurrencyName {
         this.id = id;
     }
 
+    public String getId() {
+        return this.id;
+    }
+
     public static CurrencyName fromId(String id) {
         if (StringUtils.isNotBlank(id)) {
             for (CurrencyName currencyName : values()) {
